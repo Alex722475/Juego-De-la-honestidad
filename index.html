@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de la Honestidad - Acceso Seguro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2.8rem;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .login-header p {
+            color: #555;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 25px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .role-btn:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .player-btn {
+            background: linear-gradient(135deg, #00c9ff, #92fe9d);
+            color: #1e3c72;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #ff8c42, #ff6b6b);
+            color: white;
+        }
+
+        .password-form {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .password-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 3px solid #2a5298;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Main Game Container (hidden initially) */
+        .game-container {
+            display: none;
+            width: 100%;
+        }
+
+        /* Rest of the game styles */
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1600px;
+            width: 100%;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            flex: 1;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 4px solid #2a5298;
+        }
+
+        .panel-header h2 {
+            font-size: 2.8rem;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .panel-header p {
+            color: #555;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            background: linear-gradient(135deg, #ff8c42, #ff6b6b);
+            color: white;
+        }
+
+        .admin-panel .panel-header h2 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-panel .panel-header p {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .question-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group-game {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group-game label {
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group-game input, .form-group-game textarea {
+            padding: 16px 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .form-group-game input::placeholder, .form-group-game textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group-game input:focus, .form-group-game textarea:focus {
+            outline: none;
+            border-color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn {
+            padding: 16px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-align: center;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00c9ff, #92fe9d);
+            color: #1e3c72;
+            box-shadow: 0 8px 25px rgba(0, 201, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 201, 255, 0.6);
+            background: linear-gradient(45deg, #00b4e6, #76fe76);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 65, 108, 0.4);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(255, 65, 108, 0.6);
+            background: linear-gradient(45deg, #ff2d5a, #ff381a);
+        }
+
+        .questions-list {
+            max-height: 450px;
+            overflow-y: auto;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .question-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: transform 0.2s ease;
+        }
+
+        .question-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .question-text {
+            flex: 1;
+            margin-right: 20px;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .question-actions button {
+            margin-left: 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+
+        .question-actions button:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        /* Player Panel Styles */
+        .player-panel {
+            background: linear-gradient(135deg, #00c9ff, #92fe9d);
+            color: #1e3c72;
+        }
+
+        .player-panel .panel-header h2 {
+            color: #1e3c72;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .player-panel .panel-header p {
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .current-question {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .question-display {
+            font-size: 2.2rem;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-actions {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-player {
+            padding: 20px 45px;
+            font-size: 1.4rem;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            min-width: 220px;
+        }
+
+        .btn-honest {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.5);
+        }
+
+        .btn-honest:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(40, 167, 69, 0.7);
+            background: linear-gradient(45deg, #228a3a, #1bb384);
+        }
+
+        .btn-lie {
+            background: linear-gradient(45deg, #dc3545, #e83e8c);
+            color: white;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
+        }
+
+        .btn-lie:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(220, 53, 69, 0.7);
+            background: linear-gradient(45deg, #c82333, #d91b7c);
+        }
+
+        .history {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 18px;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .history h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+            color: #1e3c72;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .history-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-left: 4px solid #28a745;
+        }
+
+        .history-item.lie {
+            border-left: 4px solid #dc3545;
+        }
+
+        .honest-response {
+            color: #28a745;
+            font-weight: 700;
+        }
+
+        .lie-response {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        /* Truth Verification Section */
+        .verification-section {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 25px;
+            text-align: center;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .verification-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #1e3c72;
+            font-weight: 800;
+        }
+
+        .verification-message {
+            font-size: 1.4rem;
+            font-weight: 700;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.3);
+            color: #1e3c72;
+        }
+
+        .verification-honest {
+            background: rgba(40, 167, 69, 0.3);
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+
+        .verification-lie {
+            background: rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px;
+                margin: 10px;
+            }
+            
+            .role-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .role-btn {
+                padding: 20px 15px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .login-container {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-header">
+            <h1><i class="fas fa-dice"></i> Juego de la Honestidad</h1>
+            <p>Elige tu rol para comenzar el juego</p>
+        </div>
+        
+        <div class="role-buttons">
+            <button class="role-btn player-btn" onclick="showPlayerView()">
+                <i class="fas fa-user"></i>
+                Jugador
+            </button>
+            <button class="role-btn admin-btn" onclick="showAdminLogin()">
+                <i class="fas fa-crown"></i>
+                Administrador
+            </button>
+        </div>
+        
+        <div class="password-form" id="adminLoginForm">
+            <div class="form-group">
+                <label for="adminPassword"><i class="fas fa-lock"></i> Contraseña de Administrador</label>
+                <input type="password" id="adminPassword" placeholder="Ingresa la contraseña" maxlength="8">
+            </div>
+            <button class="submit-btn" onclick="validateAdminPassword()">
+                <i class="fas fa-sign-in-alt"></i> Ingresar como Admin
+            </button>
+            <button class="back-btn" onclick="hideAdminLogin()">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+        </div>
+    </div>
+
+    <!-- Game Screen (hidden initially) -->
+    <div class="game-container" id="gameScreen">
+        <div class="container">
+            <!-- Admin Panel -->
+            <div class="panel admin-panel" id="adminPanel" style="display: none;">
+                <div class="panel-header">
+                    <h2><i class="fas fa-crown"></i> Panel de Administrador</h2>
+                    <p>Gestiona las preguntas del juego de honestidad</p>
+                </div>
+                
+                <form class="question-form" id="questionForm">
+                    <div class="form-group-game">
+                        <label for="questionInput"><i class="fas fa-question-circle"></i> Nueva Pregunta:</label>
+                        <input type="text" id="questionInput" placeholder="Escribe una pregunta que invite a la honestidad..." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Agregar Pregunta
+                    </button>
+                </form>
+                
+                <div class="questions-list" id="questionsList">
+                    <div class="question-item">
+                        <div class="question-text">¿Cuál es tu mayor miedo en la vida?</div>
+                        <div class="question-actions">
+                            <button class="btn-delete" onclick="deleteQuestion(this)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text">¿Has mentido en este juego anteriormente?</div>
+                        <div class="question-actions">
+                            <button class="btn-delete" onclick="deleteQuestion(this)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text">¿Qué es lo que más te avergüenza de ti mismo?</div>
+                        <div class="question-actions">
+                            <button class="btn-delete" onclick="deleteQuestion(this)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text">¿Alguna vez has traicionado a alguien que confiaba en ti?</div>
+                        <div class="question-actions">
+                            <button class="btn-delete" onclick="deleteQuestion(this)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text">¿Qué harías si supieras que nadie te juzgaría?</div>
+                        <div class="question-actions">
+                            <button class="btn-delete" onclick="deleteQuestion(this)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Panel -->
+            <div class="panel player-panel" id="playerPanel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-user-friends"></i> Panel del Jugador</h2>
+                    <p>Responde con total honestidad o elige mentir - ¡La verdad es lo que importa!</p>
+                </div>
+                
+                <div class="current-question">
+                    <div class="timer" id="timer">30s</div>
+                    <div class="question-display fade-in" id="currentQuestion">
+                        ¿Cuál es tu mayor miedo en la vida?
+                    </div>
+                    <div class="player-actions">
+                        <button class="btn-player btn-honest" onclick="answerQuestion('honest')">
+                            <i class="fas fa-check-double"></i> RESPONDER CON HONESTIDAD
+                        </button>
+                        <button class="btn-player btn-lie" onclick="answerQuestion('lie')">
+                            <i class="fas fa-times"></i> ELEGIR MENTIR
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Truth Verification -->
+                <div class="verification-section">
+                    <div class="verification-title">
+                        <i class="fas fa-shield-alt"></i> Verificación de Respuesta
+                    </div>
+                    <div class="verification-message" id="verificationMessage">
+                        Selecciona tu respuesta para continuar...
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.1rem; color: #2a5298; font-weight: 600;">
+                        <i class="fas fa-info-circle"></i> Recuerda: La honestidad construye confianza y fortalece relaciones
+                    </p>
+                </div>
+                
+                <div class="history">
+                    <h3><i class="fas fa-history"></i> Historial de Respuestas</h3>
+                    <div class="history-item">
+                        <span>¿Has mentido en este juego anteriormente?</span>
+                        <span class="honest-response">HONESTIDAD</span>
+                    </div>
+                    <div class="history-item lie">
+                        <span>¿Qué es lo que más te avergüenza de ti mismo?</span>
+                        <span class="lie-response">MENTIRA</span>
+                    </div>
+                    <div class="history-item">
+                        <span>¿Alguna vez has traicionado a alguien que confiaba en ti?</span>
+                        <span class="honest-response">HONESTIDAD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = "72283978";
+        let currentView = 'login';
+        let questions = [
+            "¿Cuál es tu mayor miedo en la vida?",
+            "¿Has mentido en este juego anteriormente?",
+            "¿Qué es lo que más te avergüenza de ti mismo?",
+            "¿Alguna vez has traicionado a alguien que confiaba en ti?",
+            "¿Qué harías si supieras que nadie te juzgaría?",
+            "¿Cuál es tu mayor arrepentimiento?",
+            "¿Qué aspecto de tu personalidad te gustaría cambiar?",
+            "¿Alguna vez has robado algo, por pequeño que sea?",
+            "¿Qué piensas realmente de tus amigos más cercanos?",
+            "¿Cuál es tu mayor debilidad como persona?",
+            "¿Has lastimado a alguien intencionalmente?",
+            "¿Qué secreto guardas que nadie conoce?",
+            "¿Alguna vez has fingido estar de acuerdo con algo que no creías?",
+            "¿Qué es lo peor que has hecho y nunca has confesado?",
+            "¿Confías completamente en las personas que te rodean?"
+        ];
+
+        let currentQuestionIndex = 0;
+        let timer = 30;
+        let timerInterval;
+
+        // Login functions
+        function showPlayerView() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('playerPanel').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            currentView = 'player';
+            initGame();
+        }
+
+        function showAdminLogin() {
+            document.getElementById('adminLoginForm').classList.add('active');
+        }
+
+        function hideAdminLogin() {
+            document.getElementById('adminLoginForm').classList.remove('active');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function validateAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            const errorElement = document.getElementById('errorMessage');
+            const successElement = document.getElementById('successMessage');
+            
+            if (password === CORRECT_PASSWORD) {
+                successElement.textContent = '✅ Acceso concedido como Administrador';
+                successElement.style.display = 'block';
+                errorElement.style.display = 'none';
+                
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('gameScreen').style.display = 'block';
+                    document.getElementById('playerPanel').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    currentView = 'admin';
+                }, 1500);
+            } else {
+                errorElement.textContent = '❌ Contraseña incorrecta. Inténtalo de nuevo.';
+                errorElement.style.display = 'block';
+                successElement.style.display = 'none';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // Game functions
+        function initGame() {
+            displayCurrentQuestion();
+            startTimer();
+            updateVerificationMessage("Selecciona tu respuesta para continuar...");
+        }
+
+        function displayCurrentQuestion() {
+            const questionElement = document.getElementById('currentQuestion');
+            if (questions.length > 0) {
+                questionElement.textContent = questions[currentQuestionIndex % questions.length];
+                questionElement.classList.remove('fade-in');
+                void questionElement.offsetWidth;
+                questionElement.classList.add('fade-in');
+            } else {
+                questionElement.textContent = "No hay preguntas disponibles. Agrega algunas desde el panel de administrador.";
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timer = 30;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timer--;
+                updateTimerDisplay();
+                
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    addToHistory(questions[currentQuestionIndex % questions.length], 'lie');
+                    nextQuestion();
+                    updateVerificationMessage("⏰ ¡Tiempo agotado! Se registró como MENTIRA.");
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `${timer}s`;
+            
+            if (timer <= 10) {
+                timerElement.style.color = '#dc3545';
+            } else {
+                timerElement.style.color = '#ff6b6b';
+            }
+        }
+
+        function answerQuestion(type) {
+            const question = questions[currentQuestionIndex % questions.length];
+            const isHonest = type === 'honest';
+            
+            addToHistory(question, type);
+            
+            if (isHonest) {
+                updateVerificationMessage("✅ RESPUESTA REGISTRADA COMO HONESTA");
+                setTimeout(() => {
+                    nextQuestion();
+                }, 2000);
+            } else {
+                updateVerificationMessage("❌ HAS ELEGIDO MENTIR");
+                setTimeout(() => {
+                    nextQuestion();
+                }, 2000);
+            }
+        }
+
+        function updateVerificationMessage(message) {
+            const verificationElement = document.getElementById('verificationMessage');
+            verificationElement.textContent = message;
+            
+            if (message.includes("HONESTA")) {
+                verificationElement.className = "verification-message verification-honest";
+            } else if (message.includes("MENTIR") || message.includes("MENTIRA")) {
+                verificationElement.className = "verification-message verification-lie";
+            } else {
+                verificationElement.className = "verification-message";
+            }
+        }
+
+        function addToHistory(question, type) {
+            const history = document.querySelector('.history');
+            const historyItem = document.createElement('div');
+            historyItem.className = type === 'lie' ? 'history-item lie' : 'history-item';
+            
+            const responseClass = type === 'honest' ? 'honest-response' : 'lie-response';
+            const responseText = type === 'honest' ? 'HONESTIDAD' : 'MENTIRA';
+            
+            historyItem.innerHTML = `
+                <span>${question}</span>
+                <span class="${responseClass}">${responseText}</span>
+            `;
+            
+            history.insertBefore(historyItem, history.querySelector('h3').nextSibling);
+            
+            const historyItems = history.querySelectorAll('.history-item');
+            if (historyItems.length > 10) {
+                historyItems[historyItems.length - 1].remove();
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+            startTimer();
+            updateVerificationMessage("Selecciona tu respuesta para continuar...");
+        }
+
+        // Add new question
+        document.getElementById('questionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const questionInput = document.getElementById('questionInput');
+            const newQuestion = questionInput.value.trim();
+            
+            if (newQuestion) {
+                questions.push(newQuestion);
+                addQuestionToAdminList(newQuestion);
+                questionInput.value = '';
+                
+                if (questions.length === 1 && currentView === 'player') {
+                    displayCurrentQuestion();
+                }
+            }
+        });
+
+        function addQuestionToAdminList(question) {
+            const questionsList = document.getElementById('questionsList');
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            questionItem.innerHTML = `
+                <div class="question-text">${question}</div>
+                <div class="question-actions">
+                    <button class="btn-delete" onclick="deleteQuestion(this)"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+            questionsList.appendChild(questionItem);
+        }
+
+        function deleteQuestion(button) {
+            const questionItem = button.closest('.question-item');
+            const questionText = questionItem.querySelector('.question-text').textContent;
+            
+            const index = questions.indexOf(questionText);
+            if (index > -1) {
+                questions.splice(index, 1);
+            }
+            
+            questionItem.remove();
+            
+            if (questions.length > 0) {
+                if (currentView === 'player') {
+                    displayCurrentQuestion();
+                }
+            } else {
+                if (currentView === 'player') {
+                    document.getElementById('currentQuestion').textContent = "No hay preguntas disponibles.";
+                    clearInterval(timerInterval);
+                    updateVerificationMessage("⚠️ No hay preguntas disponibles");
+                }
+            }
+        }
+
+        // Handle Enter key in password field
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validateAdminPassword();
+            }
+        });
+    </script>
+</body>
+</html>
