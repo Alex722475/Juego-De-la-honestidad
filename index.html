@@ -339,7 +339,7 @@
         }
 
         .questions-list {
-            max-height: 450px;
+            max-height: 300px;
             overflow-y: auto;
             margin-top: 25px;
             padding: 20px;
@@ -480,50 +480,6 @@
             background: linear-gradient(45deg, #c82333, #d91b7c);
         }
 
-        .history {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 25px;
-            border-radius: 18px;
-            max-height: 350px;
-            overflow-y: auto;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .history h3 {
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.8rem;
-            color: #1e3c72;
-            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-        }
-
-        .history-item {
-            padding: 15px;
-            margin-bottom: 12px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-left: 4px solid #28a745;
-        }
-
-        .history-item.lie {
-            border-left: 4px solid #dc3545;
-        }
-
-        .honest-response {
-            color: #28a745;
-            font-weight: 700;
-        }
-
-        .lie-response {
-            color: #dc3545;
-            font-weight: 700;
-        }
-
         /* Truth Verification Section */
         .verification-section {
             background: rgba(255, 255, 255, 0.2);
@@ -563,6 +519,92 @@
             border: 2px solid #dc3545;
         }
 
+        /* Admin Statistics Section */
+        .admin-stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 18px;
+            margin-top: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .stat-honest { color: #28a745; }
+        .stat-lie { color: #dc3545; }
+        .stat-total { color: #ffd700; }
+
+        .admin-history {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 18px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .admin-history h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-history-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            border-left: 3px solid #28a745;
+        }
+
+        .admin-history-item.lie {
+            border-left: 3px solid #dc3545;
+        }
+
+        .admin-honest-response {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .admin-lie-response {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
         /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 12px;
@@ -584,6 +626,17 @@
         }
 
         /* Responsive design */
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .panel {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+        }
+
         @media (max-width: 768px) {
             .login-container {
                 padding: 30px;
@@ -599,15 +652,55 @@
                 padding: 20px 15px;
                 font-size: 1.2rem;
             }
-        }
-
-        @media (max-width: 480px) {
-            .login-header h1 {
+            
+            .question-display {
+                font-size: 1.6rem;
+            }
+            
+            .btn-player {
+                padding: 16px 30px;
+                font-size: 1.2rem;
+                min-width: 160px;
+            }
+            
+            .panel-header h2 {
                 font-size: 2.2rem;
             }
             
-            .login-container {
-                padding: 25px 20px;
+            .timer {
+                font-size: 2rem;
+            }
+            
+            .player-actions {
+                gap: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .question-display {
+                font-size: 1.4rem;
+            }
+            
+            .btn-player {
+                padding: 14px 25px;
+                font-size: 1.1rem;
+                min-width: 140px;
+            }
+            
+            .panel-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .verification-message {
+                font-size: 1.2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
             }
         }
     </style>
@@ -654,7 +747,7 @@
             <div class="panel admin-panel" id="adminPanel" style="display: none;">
                 <div class="panel-header">
                     <h2><i class="fas fa-crown"></i> Panel de Administrador</h2>
-                    <p>Gestiona las preguntas del juego de honestidad</p>
+                    <p>Gestiona preguntas y monitorea el historial de respuestas</p>
                 </div>
                 
                 <form class="question-form" id="questionForm">
@@ -699,6 +792,46 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Admin Statistics -->
+                <div class="admin-stats">
+                    <div class="stats-title">
+                        <i class="fas fa-chart-bar"></i> Estadísticas del Juego
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div>Total de Respuestas</div>
+                            <div class="stat-number stat-total" id="totalResponses">3</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Respuestas Honestas</div>
+                            <div class="stat-number stat-honest" id="honestResponses">2</div>
+                            <div id="honestPercentage">66.7%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Respuestas con Mentira</div>
+                            <div class="stat-number stat-lie" id="lieResponses">1</div>
+                            <div id="liePercentage">33.3%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Admin History -->
+                <div class="admin-history">
+                    <h3><i class="fas fa-history"></i> Historial Completo de Respuestas</h3>
+                    <div class="admin-history-item">
+                        <span>¿Has mentido en este juego anteriormente?</span>
+                        <span class="admin-honest-response">HONESTIDAD</span>
+                    </div>
+                    <div class="admin-history-item lie">
+                        <span>¿Qué es lo que más te avergüenza de ti mismo?</span>
+                        <span class="admin-lie-response">MENTIRA</span>
+                    </div>
+                    <div class="admin-history-item">
+                        <span>¿Alguna vez has traicionado a alguien que confiaba en ti?</span>
+                        <span class="admin-honest-response">HONESTIDAD</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Player Panel -->
@@ -735,22 +868,6 @@
                         <i class="fas fa-info-circle"></i> Recuerda: La honestidad construye confianza y fortalece relaciones
                     </p>
                 </div>
-                
-                <div class="history">
-                    <h3><i class="fas fa-history"></i> Historial de Respuestas</h3>
-                    <div class="history-item">
-                        <span>¿Has mentido en este juego anteriormente?</span>
-                        <span class="honest-response">HONESTIDAD</span>
-                    </div>
-                    <div class="history-item lie">
-                        <span>¿Qué es lo que más te avergüenza de ti mismo?</span>
-                        <span class="lie-response">MENTIRA</span>
-                    </div>
-                    <div class="history-item">
-                        <span>¿Alguna vez has traicionado a alguien que confiaba en ti?</span>
-                        <span class="honest-response">HONESTIDAD</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -774,6 +891,13 @@
             "¿Alguna vez has fingido estar de acuerdo con algo que no creías?",
             "¿Qué es lo peor que has hecho y nunca has confesado?",
             "¿Confías completamente en las personas que te rodean?"
+        ];
+
+        // Global response history array
+        let responseHistory = [
+            { question: "¿Has mentido en este juego anteriormente?", type: "honest" },
+            { question: "¿Qué es lo que más te avergüenza de ti mismo?", type: "lie" },
+            { question: "¿Alguna vez has traicionado a alguien que confiaba en ti?", type: "honest" }
         ];
 
         let currentQuestionIndex = 0;
@@ -817,6 +941,7 @@
                     document.getElementById('playerPanel').style.display = 'none';
                     document.getElementById('adminPanel').style.display = 'block';
                     currentView = 'admin';
+                    updateAdminStats();
                 }, 1500);
             } else {
                 errorElement.textContent = '❌ Contraseña incorrecta. Inténtalo de nuevo.';
@@ -907,23 +1032,52 @@
         }
 
         function addToHistory(question, type) {
-            const history = document.querySelector('.history');
-            const historyItem = document.createElement('div');
-            historyItem.className = type === 'lie' ? 'history-item lie' : 'history-item';
+            // Add to global history array (only admin can see this)
+            responseHistory.push({ question: question, type: type });
             
-            const responseClass = type === 'honest' ? 'honest-response' : 'lie-response';
-            const responseText = type === 'honest' ? 'HONESTIDAD' : 'MENTIRA';
+            // Update admin stats if admin panel is visible
+            if (currentView === 'admin') {
+                updateAdminStats();
+            }
+        }
+
+        function updateAdminStats() {
+            const total = responseHistory.length;
+            const honest = responseHistory.filter(item => item.type === 'honest').length;
+            const lie = responseHistory.filter(item => item.type === 'lie').length;
             
-            historyItem.innerHTML = `
-                <span>${question}</span>
-                <span class="${responseClass}">${responseText}</span>
-            `;
+            const honestPercentage = total > 0 ? ((honest / total) * 100).toFixed(1) : 0;
+            const liePercentage = total > 0 ? ((lie / total) * 100).toFixed(1) : 0;
             
-            history.insertBefore(historyItem, history.querySelector('h3').nextSibling);
+            // Update statistics
+            document.getElementById('totalResponses').textContent = total;
+            document.getElementById('honestResponses').textContent = honest;
+            document.getElementById('lieResponses').textContent = lie;
+            document.getElementById('honestPercentage').textContent = `${honestPercentage}%`;
+            document.getElementById('liePercentage').textContent = `${liePercentage}%`;
             
-            const historyItems = history.querySelectorAll('.history-item');
-            if (historyItems.length > 10) {
-                historyItems[historyItems.length - 1].remove();
+            // Update admin history
+            const adminHistory = document.querySelector('.admin-history');
+            // Clear existing history except the title
+            while (adminHistory.children.length > 1) {
+                adminHistory.removeChild(adminHistory.lastChild);
+            }
+            
+            // Add all responses to admin history (most recent first)
+            for (let i = responseHistory.length - 1; i >= 0; i--) {
+                const item = responseHistory[i];
+                const adminHistoryItem = document.createElement('div');
+                adminHistoryItem.className = item.type === 'lie' ? 'admin-history-item lie' : 'admin-history-item';
+                
+                const responseClass = item.type === 'honest' ? 'admin-honest-response' : 'admin-lie-response';
+                const responseText = item.type === 'honest' ? 'HONESTIDAD' : 'MENTIRA';
+                
+                adminHistoryItem.innerHTML = `
+                    <span>${item.question}</span>
+                    <span class="${responseClass}">${responseText}</span>
+                `;
+                
+                adminHistory.appendChild(adminHistoryItem);
             }
         }
 
